@@ -4,6 +4,9 @@ error_codes list_ctor(list_t *list, size_t start_size)
 {
     error_codes err = SUCCESSFUL_RETURN;
 
+    if (list == NULL)
+        return NULL_LIST_MEANING;
+
     list->capacity = start_size;
     list->size = 1;
 
@@ -51,6 +54,9 @@ error_codes list_verify(list_t *list)
     if (list->next == NULL)
         return NULL_NEXT_MEANING;
 
+    if (list->prev == NULL)
+        return NULL_PREV_MEANING;
+
     if (list->capacity == 0)
         return ZERO_CAPACITY_MEANING;
 
@@ -77,7 +83,6 @@ error_codes list_push(list_t *list, list_elem_t elem, size_t pos)
 
     position_analysis(list, pos);
 
-    list->tail = pos;
     list_dump(list, "to_check", "push");
     list->size++;
 
@@ -122,6 +127,7 @@ error_codes list_dtor(list_t *list)
 
     destroy_array(&list->data, list->capacity);
     destroy_array(&list->next, list->capacity);
+    destroy_array(&list->prev, list->capacity);
 
     list->capacity = 0;
     list->free = 0;
@@ -153,6 +159,8 @@ error_codes realloc_arrays(list_t *list)
         if((err = realloc_array(&list->data, list->capacity, POISON)) != SUCCESSFUL_RETURN)
             return err;
         if((err = realloc_array(&list->next, list->capacity, -1)) != SUCCESSFUL_RETURN)
+            return err;
+        if((err = realloc_array(&list->prev, list->capacity, -1)) != SUCCESSFUL_RETURN)
             return err;
 
         find_free(list);
@@ -204,6 +212,7 @@ void list_dump(list_t *list, const char *reason, const char *process)
     PRINT_COLOR(BLUE, "data [%p]\n", list->data);
     print_array(list, list->data, "data");
     print_array(list, list->next, "next");
+    print_array(list, list->prev, "prev");
 }
 
 void print_array(list_t *list, list_elem_t *arr, const char *arrname)
@@ -234,6 +243,7 @@ error_codes common_handle_position(list_t *list, size_t pos)
                                 {
                                     list->next[list->tail] = (list_elem_t)list->free;
                                     list->next[list->free] = 0;
+                                    list->prev[list->free] = (list_elem_t)list->tail;
                                     list->tail = list->free;
 
                                     break;
@@ -241,6 +251,8 @@ error_codes common_handle_position(list_t *list, size_t pos)
         case        HEAD_FOUND:
                                 {
                                     list->next[list->free] = (list_elem_t)list->head;
+                                    list->prev[list->free] = 0;
+                                    list->prev[list->head] = (list_elem_t)list->free;
                                     list->head = list->free;
 
                                     break;
@@ -249,6 +261,8 @@ error_codes common_handle_position(list_t *list, size_t pos)
                                 {
                                     list->next[list->free] = list->next[old_pos];
                                     list->next[old_pos] = (list_elem_t)list->free;
+                                    list->prev[list->free] = (list_elem_t)old_pos;
+                                    list->prev[pos] = (list_elem_t)list->free;
 
                                     break;
                                 }
@@ -266,6 +280,7 @@ error_codes handle_init_position(list_t *list)
     list->next[list->free] = 0;
     list->head = list->free;
     list->tail = list->free;
+    list->prev[list->free] = 0;
 
     return SUCCESSFUL_RETURN;
 }

@@ -22,7 +22,8 @@ typedef enum error_codes
     NO_POS_FOUND = 17,
     UNAVAILABLE_POS = 18,
     HEAD_FOUND = 19,
-    FREE_PLACE = 20
+    FREE_PLACE = 20,
+    NULL_PREV_MEANING = 20
 } error_codes;
 
 typedef struct list_t
