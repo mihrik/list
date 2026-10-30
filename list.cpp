@@ -4,7 +4,7 @@ int main(void)
 {
     error_codes err = SUCCESSFUL_RETURN;
 
-    list_elem_t *rtrn_val = 0;
+    list_elem_t rtrn_val = 0;
 
     list_t list = {.data = NULL, .next = NULL, .prev = NULL, .free = 0, .head = 0, .tail = 0, .size = 0, .capacity = 0};
     if ((err = list_ctor(&list, 3)) != SUCCESSFUL_RETURN)
