@@ -23,7 +23,9 @@ typedef enum error_codes
     UNAVAILABLE_POS = 18,
     HEAD_FOUND = 19,
     FREE_PLACE = 20,
-    NULL_PREV_MEANING = 20
+    NULL_PREV_MEANING = 21,
+    EMPTY_POP = 22,
+    NULL_RTRN_VAL_MEANING = 23
 } error_codes;
 
 typedef struct list_t
@@ -54,4 +56,6 @@ error_codes realloc_array(list_elem_t **arr, size_t capacity, list_elem_t filler
 error_codes position_analysis(list_t *list, size_t pos);
 error_codes common_handle_position(list_t *list, size_t pos);
 error_codes handle_init_position(list_t *list);
+error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, size_t pos);
+error_codes list_pop(list_t *list, list_elem_t *rtrn_val, size_t pos);
 #endif
