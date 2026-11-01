@@ -120,7 +120,8 @@ void print_html(list_t list, const char fname[], const char process[], const cha
     fprintf(png, "</table>\n");
     fprintf(png,"</pre>\n");
     fprintf(png, "Graph Visualization\n");
-    fprintf(png, "<img src=%s width=1200px>", "MEOW.png");
+
+    fprintf(png, "<img src=%s width=1200px>", PNG_NAME);
     fprintf(png, "Text Diagram\n");
 
     size_t i = list.head;

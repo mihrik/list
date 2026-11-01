@@ -15,16 +15,16 @@ const int RCANARY = 0x52525252;
 #ifdef LIST_ON_DEBUG
 #define ONDBG(...) __VA_ARGS__
 #define LIST_DTOR(list) {\
-        check_error((*list), list_dtor((list)), "list_dtor");\
+    check_error((*list), list_dtor((list)), "LIST_DTOR");\
 }
 #define LIST_POP(list, rtrn_val, pos) {\
-        check_error((*list), list_pop((list), (rtrn_val), (pos)), "list_pop");\
+    check_error((*list), list_pop((list), (rtrn_val), (pos)), "LIST_POP");\
 }
 #define LIST_PUSH(list, elem, pos) {\
-        check_error((*list), list_push((list), (elem), (pos)), "list_push");\
+    check_error((*list), list_push((list), (elem), (pos)), "LIST_PUSH");\
 }
 #define LIST_CTOR(list, start_size) {\
-        check_error((*list), list_ctor((list), (start_size)), "list_ctor");\
+    check_error((*list), list_ctor((list), (start_size)), "LIST_CTOR");\
 }
 #else
 #define ONDBG(...)

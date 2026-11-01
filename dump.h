@@ -4,6 +4,7 @@
 
 const char * const PIC_NAME = "MEOW.txt";
 const char * const FNAME = "LOGFILE.html";
+const char * const PNG_NAME = "MEOW.png";
 
 void prepare_png(list_t list, const char fname[]);
 void print_html(list_t list, const char fname[], const char process[], const char pic_name[], const char reason[]);

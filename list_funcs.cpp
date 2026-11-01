@@ -160,7 +160,13 @@ error_codes list_dtor(list_t *list)
 {
     error_codes err = SUCCESSFUL_RETURN;
     if ((err = list_verify(list)) != SUCCESSFUL_RETURN)
-        return err;
+    {
+        free(list->data);
+        free(list->next);
+        free(list->prev);
+
+        return SUCCESSFUL_RETURN;
+    }
 
     destroy_array(&list->data, list->capacity);
     destroy_array(&list->next, list->capacity);
