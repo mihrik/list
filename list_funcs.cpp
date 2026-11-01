@@ -340,7 +340,7 @@ error_codes check_indexes(list_t list)
         if (list.next[i] < -1 || ((size_t)list.next[i] > list.capacity && list.next[i] > 0))
             return WRONG_NEXT_INDEX;
 
-        if (list.next[i] < -1 || ((size_t)list.next[i] > list.capacity && list.next[i] > 0))
+        if (list.prev[i] < -1 || ((size_t)list.prev[i] > list.capacity && list.prev[i] > 0))
             return WRONG_PREV_INDEX;
     }
 

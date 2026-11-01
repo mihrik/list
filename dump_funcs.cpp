@@ -125,12 +125,14 @@ void print_html(list_t list, const char fname[], const char process[], const cha
 
     size_t i = list.head;
     fprintf(png, "<p>HEAD");
-    while (i != list.tail)
+    size_t steps = 0;
+    while (i != list.tail && steps++ < list.capacity && i <= list.capacity)
     {
         i = (size_t)list.next[i];
         fprintf(png, " -> [%zu]", i);
     }
-    fprintf(png, " -> TAIL</p>");
+    if (i == list.tail)
+        fprintf(png, " -> TAIL</p>");
 
     fclose(png);
 }
