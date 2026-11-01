@@ -1,4 +1,5 @@
 #include "list.h"
+#include "dump.h"
 
 error_codes list_ctor(list_t *list, size_t start_size)
 {
@@ -63,6 +64,21 @@ error_codes list_verify(list_t *list)
     if (list->size > list->capacity + 1)
         return SIZE_MORE_THAN_CAPACITY;
 
+    error_codes err = SUCCESSFUL_RETURN;
+    if ((err = check_indexes(*list)) != SUCCESSFUL_RETURN)
+        return err;
+
+    if (check_for_cycle(*list) != SUCCESSFUL_RETURN)
+        return UNEXPECTED_CYCLE;
+
+    CDO(
+    if (list->lcanary != LCANARY)
+        return LEFT_LIST_CANARY_LOST;
+
+    if (list->rcanary != RCANARY)
+        return RIGHT_LIST_CANARY_LOST;
+    )
+
     return SUCCESSFUL_RETURN;
 }
 
@@ -83,7 +99,6 @@ error_codes list_push(list_t *list, list_elem_t elem, size_t pos)
     if ((err = position_analysis(list, pos)) != SUCCESSFUL_RETURN)
         return err;
 
-    list_dump(list, "to_check", "push");
     list->size++;
 
     return SUCCESSFUL_RETURN;
@@ -220,39 +235,6 @@ error_codes position_analysis(list_t *list, size_t pos)
     return SUCCESSFUL_RETURN;
 }
 
-void list_dump(list_t *list, const char *reason, const char *process)
-{
-    assert(list);
-
-    PRINT_COLOR(EXTRA_RED, "=== DATA ===\n\n");
-
-    PRINT_COLOR(BLUE, "size = %zu\n", list->size);
-    PRINT_COLOR(BLUE, "capacity = %zu\n", list->capacity);
-    PRINT_COLOR(BLUE, "head = %zu\n", list->head);
-    PRINT_COLOR(BLUE, "tail = %zu\n", list->tail);
-    PRINT_COLOR(BLUE, "free = %zu\n", list->free);
-    PRINT_COLOR(BLUE, "data [%p]\n", list->data);
-    print_array(list, list->data, "data");
-    print_array(list, list->next, "next");
-    print_array(list, list->prev, "prev");
-}
-
-void print_array(list_t *list, list_elem_t *arr, const char *arrname)
-{
-    PRINT_COLOR(BLUE, "%s [%p]\n",arrname, arr);
-    for (size_t i = 0; i < list->capacity + 1; i++)
-    {
-        if (i <= list->size)
-        {
-            PRINT_COLOR(GREEN, "    *[%zu] = %d\n", i, arr[i]);
-        }
-        else
-        {
-            PRINT_COLOR(YELLOW, "     [%zu] = %d\n", i, arr[i]);
-        }
-    }
-}
-
 error_codes common_handle_position(list_t *list, size_t pos)
 {
     size_t old_pos = 0;
@@ -334,3 +316,160 @@ error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, size_t pos)
 
     return SUCCESSFUL_RETURN;
 }
+
+error_codes check_for_cycle(list_t list)
+{
+    size_t i = list.head;
+    size_t counter = 0;
+
+    while (i != 0)
+    {
+        if (counter++ >= list.size)
+            return UNEXPECTED_CYCLE;
+
+        i = (size_t)list.next[i];
+    }
+
+    return SUCCESSFUL_RETURN;
+}
+
+error_codes check_indexes(list_t list)
+{
+    for (size_t i = 0; i <= list.capacity; i++)
+    {
+        if (list.next[i] < -1 || ((size_t)list.next[i] > list.capacity && list.next[i] > 0))
+            return WRONG_NEXT_INDEX;
+
+        if (list.next[i] < -1 || ((size_t)list.next[i] > list.capacity && list.next[i] > 0))
+            return WRONG_PREV_INDEX;
+    }
+
+    return SUCCESSFUL_RETURN;
+}
+
+void check_error(list_t list, error_codes err, const char process[])
+{
+    ONDBG(
+    switch(err)
+    {
+        case MEMORY_ALLOCATION_ERROR:
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "MEMORY ALLOCATION ERROR (error_code = %d), while doing %s\n", MEMORY_ALLOCATION_ERROR, process);
+
+                                        break;
+                                     }
+        case NULL_LIST_MEANING      :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "NULL LIST MEANING (error_code = %d), while doing %s\n", NULL_LIST_MEANING, process);
+
+                                        break;
+                                     }
+        case NULL_DATA_MEANING      :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "NULL DATA MEANING (error_code = %d), while doing %s\n", NULL_DATA_MEANING, process);
+
+                                        break;
+                                     }
+        case NULL_NEXT_MEANING      :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "NULL NEXT MEANING (error_code = %d), while doing %s\n", NULL_NEXT_MEANING, process);
+
+                                        break;
+                                     }
+        case NULL_PREV_MEANING      :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "NULL PREV MEANING (error_code = %d), while doing %s\n", NULL_PREV_MEANING, process);
+
+                                        break;
+                                     }
+        case RIGHT_LIST_CANARY_LOST      :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "RIGHT LIST CANARY LOST (error_code = %d), while doing %s\n", RIGHT_LIST_CANARY_LOST, process);
+
+                                        break;
+                                     }
+        case LEFT_LIST_CANARY_LOST       :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "LEFT LIST CANARY LOST (error_code = %d), while doing %s\n", LEFT_LIST_CANARY_LOST, process);
+
+                                        break;
+                                     }
+        case ZERO_CAPACITY_MEANING  :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "ZERO_CAPACITY_MEANING (error_code = %d), while doing %s\n", ZERO_CAPACITY_MEANING, process);
+
+                                        break;
+                                     }
+        case SIZE_MORE_THAN_CAPACITY:
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "SIZE_MORE_THAN_CAPACITY (error_code = %d), while doing %s\n", SIZE_MORE_THAN_CAPACITY, process);
+
+                                        break;
+                                     }
+        case UNAVAILABLE_POS        :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "SIZE_MORE_THAN_CAPACITY (error_code = %d), while doing %s\n", UNAVAILABLE_POS, process);
+
+                                        break;
+                                     }
+        case EMPTY_POP              :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "EMPTY_POP (error_code = %d), while doing %s, check: <%s> to get more information\n", EMPTY_POP, process, FNAME);
+
+                                        print_html(list, FNAME, process, PIC_NAME, "EMPTY POP");
+
+                                        break;
+                                     }
+        case NULL_RTRN_VAL_MEANING  :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "NULL_RTRN_VAL_MEANING (error_code = %d), while doing %s, check: <%s> to get more information\n", NULL_RTRN_VAL_MEANING, process, FNAME);
+
+                                        print_html(list, FNAME, process, PIC_NAME, "NULL_RTRN_VAL_MEANING");
+
+                                        break;
+                                     }
+        case UNEXPECTED_CYCLE       :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "UNEXPECTED_CYCLE (error_code = %d), while doing %s, check: <%s> to get more information\n", UNEXPECTED_CYCLE, process, FNAME);
+
+                                        print_html(list, FNAME, process, PIC_NAME, "UNEXPECTED_CYCLE");
+
+                                        break;
+                                     }
+        case WRONG_NEXT_INDEX       :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "WRONG_NEXT_INDEX (error_code = %d), while doing %s, check: <%s> to get more information\n", WRONG_NEXT_INDEX, process, FNAME);
+
+                                        print_html(list, FNAME, process, PIC_NAME, "WRONG_NEXT_INDEX");
+
+                                        break;
+                                     }
+        case WRONG_PREV_INDEX       :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "WRONG_PREV_INDEX (error_code = %d), while doing %s, check: <%s> to get more information\n", WRONG_PREV_INDEX, process, FNAME);
+
+                                        print_html(list, FNAME, process, PIC_NAME, "WRONG_PREV_INDEX");
+
+                                        break;
+                                     }
+        default                     :   break;
+    }
+    )
+
+}
+
