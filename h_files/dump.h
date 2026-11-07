@@ -7,6 +7,6 @@ const char * const FNAME = "LOGFILE.html";
 const int MAX_FILE_NAME_LEN = 40;
 const int MAX_COMMAND_NAME_LEN = 120;
 
-void prepare_png(list_t list, const char fname[]);
-void print_html(list_t list, const char fname[], const char process[], const char pic_name[], const char reason[]);
+error_codes prepare_png(list_t list, const char fname[]);
+error_codes print_html(list_t list, const char fname[], const char process[], const char pic_name[], const char reason[]);
 #endif

@@ -8,7 +8,7 @@ error_codes list_ctor(list_t *list, size_t start_size)
     if (list == NULL)
         return NULL_LIST_MEANING;
 
-    fopen(FNAME, "w");
+    fclose(fopen(FNAME, "w")); // clear file
 
     list->capacity = start_size;
     list->size = 0;
@@ -32,6 +32,8 @@ error_codes list_ctor(list_t *list, size_t start_size)
 
 error_codes fill_array(list_elem_t *arr, list_elem_t elem, size_t start, size_t end)
 {
+    assert(arr);
+
     for (size_t i = start; i <= end; i++)
     {
         arr[i] = elem;
@@ -42,6 +44,8 @@ error_codes fill_array(list_elem_t *arr, list_elem_t elem, size_t start, size_t 
 
 error_codes prepare_array(list_elem_t **arr, list_elem_t zero_elem, list_elem_t fill_elem, size_t size)
 {
+    assert(arr);
+
     *arr = (list_elem_t *) malloc((size + 1) * sizeof(list_elem_t));
     if (*arr == NULL)
         return MEMORY_ALLOCATION_ERROR;
@@ -232,9 +236,13 @@ error_codes common_push_before(list_t *list, list_elem_t pos)
 
 error_codes set_free(list_t *list)
 {
+    assert(list);
+
     list_elem_t last_free = 0;
 
-    list->next[list->free] = -1;
+    if (list->free != 0)
+        list->next[list->free] = -1;
+
     for (size_t i = 1; i <= list->capacity; i++)
     {
         if (list->next[i] == -1)
@@ -310,6 +318,8 @@ error_codes list_dtor(list_t *list)
 
 void destroy_array(list_elem_t **arr, size_t capacity)
 {
+    assert(arr);
+
     fill_array(*arr, POISON, 0, capacity);
     free(*arr);
     *arr = NULL;
@@ -338,6 +348,8 @@ error_codes realloc_arrays(list_t *list)
 
 error_codes realloc_array(list_elem_t **arr, size_t capacity, list_elem_t filler)
 {
+    assert(arr);
+
     list_elem_t *tmp = (list_elem_t *) realloc(*arr, (capacity + 1) * sizeof(list_elem_t));
     if (tmp == NULL)
         return MEMORY_ALLOCATION_ERROR;
@@ -350,6 +362,9 @@ error_codes realloc_array(list_elem_t **arr, size_t capacity, list_elem_t filler
 
 error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, list_elem_t pos)
 {
+    assert(list);
+    assert(rtrn_val);
+
     *rtrn_val = list->data[pos];
 
     list->next[list->prev[pos]] = list->next[pos];
@@ -357,6 +372,10 @@ error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, list_elem_t pos)
 
     list->prev[pos] = 0;
     list->next[pos] = list->free;
+
+    if (list->free != 0)
+        list->prev[list->free] = pos;
+
     list->free = pos;
     list->data[pos] = POISON;
 
@@ -365,7 +384,7 @@ error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, list_elem_t pos)
 
 error_codes check_for_cycle(list_t list)
 {
-    list_elem_t i = list.prev[0];
+    list_elem_t i = list.next[0];
     size_t counter = 0;
 
     while (i != 0)

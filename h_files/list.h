@@ -51,7 +51,7 @@ const int RCANARY = 0x52525252;
 #define LIST_INSERT_BEFORE(list, elem, pos) {\
     error_codes err0r = SUCCESSFUL_RETURN;\
     \
-    check_error((*list), list_insert_before((list), (elem), (pos)), "list_insert_before");\
+    err0r = check_error((*list), list_insert_before((list), (elem), (pos)), "list_insert_before");\
     if (err0r != SUCCESSFUL_RETURN)\
     {\
         LIST_DTOR(list);\
@@ -61,7 +61,7 @@ const int RCANARY = 0x52525252;
 #define LIST_CTOR(list, start_size) {\
     error_codes err0r = SUCCESSFUL_RETURN;\
     \
-    check_error((*list), list_ctor((list), (start_size)), "LIST_CTOR");\
+    err0r = check_error((*list), list_ctor((list), (start_size)), "LIST_CTOR");\
     if (err0r != SUCCESSFUL_RETURN)\
     {\
         LIST_DTOR(list);\
@@ -104,7 +104,8 @@ typedef enum error_codes
     RIGHT_LIST_CANARY_LOST  = 24,
     UNEXPECTED_CYCLE        = 25,
     WRONG_NEXT_INDEX        = 26,
-    WRONG_PREV_INDEX        = 27
+    WRONG_PREV_INDEX        = 27,
+    UNAVAILABLE_FILE        = 28
 } error_codes;
 
 typedef struct list_t

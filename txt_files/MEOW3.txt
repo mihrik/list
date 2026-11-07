@@ -36,5 +36,5 @@ node3 -> node4 [color="green", penwidth=1, constraint = false];
 node3 -> node2 [color="blue", penwidth=1, constraint = false];
 node4 -> node3 [color="blue", penwidth=1, constraint = false];
 node5 -> node6 [color="green", penwidth=1, constraint = false];
-node6 -> node5 [color="blue", penwidth=1, constraint = false];
+node6 -> node5 [color="red", penwidth=1, constraint = false];
 }

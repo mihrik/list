@@ -2,9 +2,15 @@
 
 static int pic_num = 0;
 
-void prepare_png(list_t list, const char fname[])
+error_codes prepare_png(list_t list, const char fname[])
 {
     FILE *png = fopen(fname, "w");
+
+    if (png == NULL)
+    {
+        PRINT_COLOR(EXTRA_RED, "UNAVAILABLE FILE: <%s>, while doing prepare_png\n", fname);
+        return UNAVAILABLE_FILE;
+    }
 
     fprintf(png, "digraph {\n\n");
     fprintf(png, "rankdir = LR;\n");
@@ -53,15 +59,13 @@ void prepare_png(list_t list, const char fname[])
     {
         int next = list.next[i];
         int prev = list.prev[i];
-        int next_prev = list.next[prev];
-        int prev_next = list.prev[next];
 
-        if (next > 0 && (size_t)next <= list.capacity && (size_t)prev_next == i)
+        if (next > 0 && (size_t)next <= list.capacity && (size_t)list.prev[next] == i)
             fprintf(png, "node%zu -> node%d [color=\"green\", penwidth=1, constraint = false];\n", i, next);
         else if (next != 0)
             fprintf(png, "node%zu -> node%d [color=\"red\", penwidth=1, constraint = false];\n", i, next);
 
-        if (prev > 0 && (size_t)prev <= list.capacity && (size_t)next_prev == i)
+        if (prev > 0 && (size_t)prev <= list.capacity && (size_t)list.prev[next] == i)
             fprintf(png, "node%zu -> node%d [color=\"blue\", penwidth=1, constraint = false];\n", i, prev);
         else if (prev != 0)
             fprintf(png, "node%zu -> node%d [color=\"red\", penwidth=1, constraint = false];\n", i, prev);
@@ -71,19 +75,27 @@ void prepare_png(list_t list, const char fname[])
     fprintf(png, "}\n");
 
     fclose(png);
+
+    return SUCCESSFUL_RETURN;
 }
 
-void print_html(list_t list, const char fname[], const char process[], const char pic_name[], const char reason[])
+error_codes print_html(list_t list, const char fname[], const char process[], const char pic_name[], const char reason[])
 {
-    FILE *png = fopen(fname, "a"); // TODO all operations
+    FILE *png = fopen(fname, "a");
+
+    if (png == NULL)
+    {
+        PRINT_COLOR(EXTRA_RED, "UNAVAILABLE FILE: <%s>, while doing prepare_png\n", fname);
+        return UNAVAILABLE_FILE;
+    }
 
     pic_num++;
 
     char pic_file_name[MAX_FILE_NAME_LEN] = {};
-    sprintf(pic_file_name, "txt_files/%s%c.txt", pic_name, pic_num + '0');
+    sprintf(pic_file_name, "txt_files/%s%d.txt", pic_name, pic_num);
 
     char png_file_name[MAX_FILE_NAME_LEN] = {};
-    sprintf(png_file_name, "png_files/%s%c.png", pic_name, pic_num + '0');
+    sprintf(png_file_name, "png_files/%s%d.png", pic_name, pic_num);
 
 
     prepare_png(list, pic_file_name);
@@ -150,7 +162,7 @@ void print_html(list_t list, const char fname[], const char process[], const cha
     list_elem_t i = get_head(list);
     fprintf(png, "<p>HEAD:[%d]", i);
     size_t steps = 0;
-    while (i != get_tail(list) && steps++ < list.capacity && i <= (list_elem_t)list.capacity)
+    while (i != get_tail(list) && steps++ < list.capacity && i <= (list_elem_t)list.capacity && i >= 0)
     {
         i = (size_t)list.next[i];
         fprintf(png, " -> [%d]", i);
@@ -159,4 +171,6 @@ void print_html(list_t list, const char fname[], const char process[], const cha
         fprintf(png, ":TAIL</p>");
 
     fclose(png);
+
+    return SUCCESSFUL_RETURN;
 }

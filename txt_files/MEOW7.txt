@@ -72,5 +72,5 @@ node10 -> node11 [color="green", penwidth=1, constraint = false];
 node10 -> node9 [color="blue", penwidth=1, constraint = false];
 node11 -> node12 [color="green", penwidth=1, constraint = false];
 node11 -> node10 [color="blue", penwidth=1, constraint = false];
-node12 -> node11 [color="blue", penwidth=1, constraint = false];
+node12 -> node11 [color="red", penwidth=1, constraint = false];
 }
