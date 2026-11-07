@@ -1,5 +1,5 @@
-#include "list.h"
-#include "dump.h"
+#include "h_files/list.h"
+#include "h_files/dump.h"
 
 error_codes list_ctor(list_t *list, size_t start_size)
 {
@@ -8,8 +8,10 @@ error_codes list_ctor(list_t *list, size_t start_size)
     if (list == NULL)
         return NULL_LIST_MEANING;
 
+    fopen(FNAME, "w");
+
     list->capacity = start_size;
-    list->size = 1;
+    list->size = 0;
 
     if ((err = prepare_array(&list->data, POISON, POISON, start_size)) != SUCCESSFUL_RETURN)
         return err;
@@ -19,6 +21,11 @@ error_codes list_ctor(list_t *list, size_t start_size)
 
     if ((err = prepare_array(&list->prev, 0, -1, start_size)) != SUCCESSFUL_RETURN)
         return err;
+
+    list->prev[0] = 0;
+    list->next[0] = 0;
+
+    set_free(list);
 
     return SUCCESSFUL_RETURN;
 }
@@ -61,7 +68,7 @@ error_codes list_verify(list_t *list)
     if (list->capacity == 0)
         return ZERO_CAPACITY_MEANING;
 
-    if (list->size > list->capacity + 1)
+    if (list->size > list->capacity)
         return SIZE_MORE_THAN_CAPACITY;
 
     error_codes err = SUCCESSFUL_RETURN;
@@ -82,7 +89,37 @@ error_codes list_verify(list_t *list)
     return SUCCESSFUL_RETURN;
 }
 
-error_codes list_push(list_t *list, list_elem_t elem, size_t pos)
+list_elem_t get_head(list_t list)
+{
+    return list.next[0];
+}
+
+list_elem_t get_tail(list_t list)
+{
+    return list.prev[0];
+}
+
+list_elem_t get_next(list_t list, size_t index)
+{
+    return list.next[index];
+}
+
+list_elem_t get_prev(list_t list, size_t index)
+{
+    return list.prev[index];
+}
+
+list_elem_t get_free(list_t list)
+{
+    return list.free;
+}
+
+list_elem_t next_free(list_t list)
+{
+    return list.next[list.free];
+}
+
+error_codes list_insert_after(list_t *list, list_elem_t elem, list_elem_t pos)
 {
     error_codes err = SUCCESSFUL_RETURN;
     if ((err = list_verify(list)) != SUCCESSFUL_RETURN)
@@ -91,20 +128,138 @@ error_codes list_push(list_t *list, list_elem_t elem, size_t pos)
     if ((err = realloc_arrays(list)) != SUCCESSFUL_RETURN)
         return err;
 
-    if (pos <= 0 || pos >list->capacity)
+    if (list->size == 0)
+    {
+        list_init(list, elem);
+
+        return SUCCESSFUL_RETURN;
+    }
+
+    if (pos <= 0 || pos > (list_elem_t)list->capacity)
         return UNAVAILABLE_POS;
 
     list->data[list->free] = elem;
 
-    if ((err = position_analysis(list, pos)) != SUCCESSFUL_RETURN)
-        return err;
+    common_push_after(list, pos);
 
     list->size++;
+    print_html(*list, FNAME, "INSERT_AFTER", PIC_NAME, "SUCCESS");
 
     return SUCCESSFUL_RETURN;
 }
 
-error_codes list_pop(list_t *list, list_elem_t *rtrn_val, size_t pos)
+error_codes common_push_after(list_t *list, list_elem_t pos)
+{
+    assert(list);
+
+    list_elem_t next_free = list->next[list->free];
+    list->next[list->free] = list->next[pos];
+    list->prev[list->next[pos]] = list->free;
+    list->next[pos] = list->free;
+
+    list->prev[list->free] = pos;
+    list->free = next_free;
+    list->prev[list->free] = 0;
+
+    return SUCCESSFUL_RETURN;
+}
+
+error_codes list_init(list_t *list, list_elem_t elem)
+{
+    assert(list);
+
+    list_elem_t next_free = list->next[list->free];
+
+    list->data[list->free] = elem;
+    list->prev[list->free] = 0;
+    list->next[list->free] = 0;
+
+    list->next[0] = list->free;
+    list->prev[0] = list->free;
+    list->size = 1;
+
+    list->free = next_free;
+    list->prev[list->free] = 0;
+
+
+    return SUCCESSFUL_RETURN;
+}
+
+error_codes list_insert_before(list_t *list, list_elem_t elem, list_elem_t pos)
+{
+    error_codes err = SUCCESSFUL_RETURN;
+    if ((err = list_verify(list)) != SUCCESSFUL_RETURN)
+        return err;
+
+    if ((err = realloc_arrays(list)) != SUCCESSFUL_RETURN)
+        return err;
+
+    if (pos <= 0 || pos > (list_elem_t)list->capacity)
+        return UNAVAILABLE_POS;
+
+    if (list->size == 0)
+    {
+        list_init(list, elem);
+
+        return SUCCESSFUL_RETURN;
+    }
+
+    list->data[list->free] = elem;
+
+    common_push_before(list, pos);
+
+    list->size++;
+    print_html(*list, FNAME, "INSERT_BEFORE", PIC_NAME, "SUCCESS");
+
+    return SUCCESSFUL_RETURN;
+}
+
+error_codes common_push_before(list_t *list, list_elem_t pos)
+{
+    assert(list);
+
+    list_elem_t next_free = list->next[list->free];
+    list->prev[list->free] = list->prev[pos];
+    list->next[list->prev[pos]] = list->free;
+    list->prev[pos] = list->free;
+
+    list->next[list->free] = pos;
+    list->free = next_free;
+    list->prev[list->free] = 0;
+
+    return SUCCESSFUL_RETURN;
+}
+
+error_codes set_free(list_t *list)
+{
+    list_elem_t last_free = 0;
+
+    list->next[list->free] = -1;
+    for (size_t i = 1; i <= list->capacity; i++)
+    {
+        if (list->next[i] == -1)
+        {
+            if (last_free == 0)
+            {
+                list->free = (list_elem_t)i;
+                list->prev[i] = 0;
+                list->next[i] = 0;
+                last_free = (list_elem_t)i;
+            }
+            else
+            {
+                list->prev[i] = last_free;
+                list->next[last_free] = (list_elem_t)i;
+                list->next[i] = 0;
+                last_free = (list_elem_t)i;
+            }
+        }
+    }
+
+    return SUCCESSFUL_RETURN;
+}
+
+error_codes list_pop(list_t *list, list_elem_t *rtrn_val, list_elem_t pos)
 {
     error_codes err = SUCCESSFUL_RETURN;
     if ((err = list_verify(list)) != SUCCESSFUL_RETURN)
@@ -113,47 +268,18 @@ error_codes list_pop(list_t *list, list_elem_t *rtrn_val, size_t pos)
     if (rtrn_val == NULL)
         return NULL_RTRN_VAL_MEANING;
 
-    if (pos <= 0 || pos >list->capacity)
+    if (pos <= 0 || pos > (list_elem_t)list->capacity)
         return UNAVAILABLE_POS;
 
-    if (list->next[pos] == -1)
+    if (list->data[pos] == POISON)
         return EMPTY_POP;
 
     handle_pop(list, rtrn_val, pos);
 
     list->size--;
+    print_html(*list, FNAME, "POP", PIC_NAME, "SUCCESS");
 
     return SUCCESSFUL_RETURN;
-}
-
-error_codes find_free(list_t *list)
-{
-    for (size_t i = 0; i < list->capacity + 1; i++)
-    {
-        if (list->next[i] == -1)
-        {
-            list->free = i;
-            return SUCCESSFUL_RETURN;
-        }
-    }
-
-    return NO_FREE_SPACE;
-}
-
-error_codes find_pos(list_t *list, size_t *old_pos, size_t pos)
-{
-    for (size_t i = 0; i < list->capacity + 1; i++)
-    {
-        if (list->next[i] == (list_elem_t)pos)
-        {
-            *old_pos = i;
-            return SUCCESSFUL_RETURN;
-        }
-    }
-
-    if (pos == list->head)
-        return HEAD_FOUND;
-    return FREE_PLACE;
 }
 
 error_codes list_dtor(list_t *list)
@@ -174,9 +300,7 @@ error_codes list_dtor(list_t *list)
 
     list->capacity = 0;
     list->free = 0;
-    list->tail = 0;
     list->size = 0;
-    list->head = 0;
 
     list = NULL;
 
@@ -195,7 +319,7 @@ error_codes realloc_arrays(list_t *list)
 {
     error_codes err = SUCCESSFUL_RETURN;
 
-    if ((err = find_free(list)) != SUCCESSFUL_RETURN)
+    if (list->next[list->free] == 0)
     {
         list->capacity *= 2;
 
@@ -206,7 +330,7 @@ error_codes realloc_arrays(list_t *list)
         if((err = realloc_array(&list->prev, list->capacity, -1)) != SUCCESSFUL_RETURN)
             return err;
 
-        find_free(list);
+        set_free(list);
     }
 
     return SUCCESSFUL_RETURN;
@@ -224,100 +348,16 @@ error_codes realloc_array(list_elem_t **arr, size_t capacity, list_elem_t filler
     return SUCCESSFUL_RETURN;
 }
 
-error_codes position_analysis(list_t *list, size_t pos)
-{
-    error_codes err = SUCCESSFUL_RETURN;
-
-    if (list->size > 1)
-    {
-        if ((err = common_handle_position(list, pos)) != SUCCESSFUL_RETURN)
-            return err;
-    }
-    else
-    {
-        handle_init_position(list);
-    }
-
-    return SUCCESSFUL_RETURN;
-}
-
-error_codes common_handle_position(list_t *list, size_t pos)
-{
-    size_t old_pos = 0;
-
-    error_codes err = find_pos(list, &old_pos, pos);
-
-    switch(err)
-    {
-        case        FREE_PLACE:
-                                {
-                                    list->next[list->tail] = (list_elem_t)list->free;
-                                    list->next[list->free] = 0;
-                                    list->prev[list->free] = (list_elem_t)list->tail;
-                                    list->tail = list->free;
-
-                                    break;
-                                }
-        case        HEAD_FOUND:
-                                {
-                                    list->next[list->free] = (list_elem_t)list->head;
-                                    list->prev[list->free] = 0;
-                                    list->prev[list->head] = (list_elem_t)list->free;
-                                    list->head = list->free;
-
-                                    break;
-                                }
-        case SUCCESSFUL_RETURN:
-                                {
-                                    list->next[list->free] = list->next[old_pos];
-                                    list->next[old_pos] = (list_elem_t)list->free;
-                                    list->prev[list->free] = (list_elem_t)old_pos;
-                                    list->prev[pos] = (list_elem_t)list->free;
-
-                                    break;
-                                }
-        default               :
-                                {
-                                    return UNAVAILABLE_POS;
-                                }
-    }
-
-    return SUCCESSFUL_RETURN;
-}
-
-error_codes handle_init_position(list_t *list)
-{
-    list->next[list->free] = 0;
-    list->head = list->free;
-    list->tail = list->free;
-    list->prev[list->free] = 0;
-
-    return SUCCESSFUL_RETURN;
-}
-
-error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, size_t pos)
+error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, list_elem_t pos)
 {
     *rtrn_val = list->data[pos];
-    if (pos == list->tail)
-    {
-        list->tail = (size_t)list->prev[pos];
-        if (list->tail != 0)
-            list->next[list->tail] = 0;
-        else
-            list->head = 0;
-    }
-    else if (pos == list->head)
-    {
-        list->head = (size_t) list->next[pos];
-        list->prev[list->head] = 0;
-    }
-    else
-    {
-        list->next[list->prev[pos]] = list->next[pos];
-        list->prev[list->next[pos]] = list->prev[pos];
-    }
-    list->prev[pos] = -1;
-    list->next[pos] = -1;
+
+    list->next[list->prev[pos]] = list->next[pos];
+    list->prev[list->next[pos]] = list->prev[pos];
+
+    list->prev[pos] = 0;
+    list->next[pos] = list->free;
+    list->free = pos;
     list->data[pos] = POISON;
 
     return SUCCESSFUL_RETURN;
@@ -325,7 +365,7 @@ error_codes handle_pop(list_t *list, list_elem_t *rtrn_val, size_t pos)
 
 error_codes check_for_cycle(list_t list)
 {
-    size_t i = list.head;
+    list_elem_t i = list.prev[0];
     size_t counter = 0;
 
     while (i != 0)
@@ -353,7 +393,7 @@ error_codes check_indexes(list_t list)
     return SUCCESSFUL_RETURN;
 }
 
-void check_error(list_t list, error_codes err, const char process[])
+error_codes check_error(list_t list, error_codes err, const char process[])
 {
     ONDBG(
     switch(err)
@@ -475,6 +515,8 @@ void check_error(list_t list, error_codes err, const char process[])
                                      }
         default                     :   break;
     }
+
+    return err;
     )
 
 }

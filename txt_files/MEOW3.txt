@@ -1,0 +1,40 @@
+digraph {
+
+rankdir = LR;
+splines=ortho;
+node0 [shape=Mrecord; style = filled; fillcolor = "#c0c6ff5b"; color = "#000000";
+    label = "<status> SERVICE | index =  0 | data = 305419896 | { <prev> prev = 4 | next = 1}  "; ]
+
+node1 [shape=Mrecord; style = filled; fillcolor = "#7e0e775b"; color = "#030303";
+    label = "<status> HEAD | index =  1 | data = 10 | { <prev> prev = 0 | next = 2}  "; ]
+
+node2 [shape=Mrecord; style = filled; fillcolor = "#c0ffc05b"; color = "#000000";
+    label = "<status> USED | index =  2 | data = 20 | { <prev> prev = 1 | next = 3}  "; ]
+
+node3 [shape=Mrecord; style = filled; fillcolor = "#c0ffc05b"; color = "#000000";
+    label = "<status> USED | index =  3 | data = 30 | { <prev> prev = 2 | next = 4}  "; ]
+
+node4 [shape=Mrecord; style = filled; fillcolor = "#337d215b"; color = "#000000";
+    label = "<status> TAIL | index =  4 | data = 40 | { <prev> prev = 3 | next = 0}  "; ]
+
+node5 [shape=Mrecord; style = filled; fillcolor = "#d3fc1b5b"; color = "#000000";
+    label = "<status> FREE | index =  5 | data = 305419896 | { <prev> prev = 0 | next = 6}  "; ]
+
+node6 [shape=Mrecord; style = filled; fillcolor = "#d3fc1b5b"; color = "#000000";
+    label = "<status> FREE | index =  6 | data = 305419896 | { <prev> prev = 5 | next = 0}  "; ]
+
+node0 -> node1 [style=invis, weight=100];
+node1 -> node2 [style=invis, weight=100];
+node2 -> node3 [style=invis, weight=100];
+node3 -> node4 [style=invis, weight=100];
+node4 -> node5 [style=invis, weight=100];
+node5 -> node6 [style=invis, weight=100];
+node1 -> node2 [color="green", penwidth=1, constraint = false];
+node2 -> node3 [color="green", penwidth=1, constraint = false];
+node2 -> node1 [color="blue", penwidth=1, constraint = false];
+node3 -> node4 [color="green", penwidth=1, constraint = false];
+node3 -> node2 [color="blue", penwidth=1, constraint = false];
+node4 -> node3 [color="blue", penwidth=1, constraint = false];
+node5 -> node6 [color="green", penwidth=1, constraint = false];
+node6 -> node5 [color="blue", penwidth=1, constraint = false];
+}

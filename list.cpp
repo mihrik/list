@@ -1,4 +1,4 @@
-#include "list.h"
+#include "h_files/list.h"
 
 int main(void)
 {
@@ -6,17 +6,30 @@ int main(void)
 
     list_t list = {CDO(.lcanary = LCANARY, )
         ONDBG(.name = "list", .file = __FILE__, .func = __func__, .line = __LINE__ - 1,)
-        .data = NULL, .next = NULL, .prev = NULL, .free = 0, .head = 0, .tail = 0, .size = 0, .capacity = 0
+        .data = NULL, .next = NULL, .prev = NULL, .free = 0, .size = 0, .capacity = 0
         CDO(, .rcanary = RCANARY)};
     LIST_CTOR(&list, 3)
 
-    LIST_PUSH(&list, 10, 1);
-    LIST_PUSH(&list, 20, 2);
-    LIST_PUSH(&list, 30, 3);
+    for (int i = 1; i <= 4; i++)
+    {
+        LIST_INSERT_AFTER(&list, i * 10, get_tail(list));
+    }
 
-    list.next[2] = 1;
+    for (int i = 1; i <= 2; i++)
+    {
+        LIST_INSERT_BEFORE(&list, -i * 10, get_head(list));
+    }
 
-    LIST_PUSH(&list, 40, 3);
+    list_elem_t pos = get_head(list);
+
+    for (int i = 0; i < 2; i++)
+        pos = list.next[pos];
+
+    LIST_INSERT_AFTER(&list, 777, pos);
+
+    LIST_INSERT_BEFORE(&list, 888, pos);
+
+    LIST_INSERT_AFTER(&list, 999, get_tail(list));
 
     LIST_DTOR(&list);
 

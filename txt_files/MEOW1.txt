@@ -1,0 +1,22 @@
+digraph {
+
+rankdir = LR;
+splines=ortho;
+node0 [shape=Mrecord; style = filled; fillcolor = "#c0c6ff5b"; color = "#000000";
+    label = "<status> SERVICE | index =  0 | data = 305419896 | { <prev> prev = 2 | next = 1}  "; ]
+
+node1 [shape=Mrecord; style = filled; fillcolor = "#7e0e775b"; color = "#030303";
+    label = "<status> HEAD | index =  1 | data = 10 | { <prev> prev = 0 | next = 2}  "; ]
+
+node2 [shape=Mrecord; style = filled; fillcolor = "#337d215b"; color = "#000000";
+    label = "<status> TAIL | index =  2 | data = 20 | { <prev> prev = 1 | next = 0}  "; ]
+
+node3 [shape=Mrecord; style = filled; fillcolor = "#d3fc1b5b"; color = "#000000";
+    label = "<status> FREE | index =  3 | data = 305419896 | { <prev> prev = 0 | next = 0}  "; ]
+
+node0 -> node1 [style=invis, weight=100];
+node1 -> node2 [style=invis, weight=100];
+node2 -> node3 [style=invis, weight=100];
+node1 -> node2 [color="green", penwidth=1, constraint = false];
+node2 -> node1 [color="blue", penwidth=1, constraint = false];
+}
