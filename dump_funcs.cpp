@@ -65,7 +65,7 @@ error_codes prepare_png(list_t list, const char fname[])
         else if (next != 0)
             fprintf(png, "node%zu -> node%d [color=\"red\", penwidth=1, constraint = false];\n", i, next);
 
-        if (prev > 0 && (size_t)prev <= list.capacity && (size_t)list.prev[next] == i)
+        if (prev > 0 && (size_t)prev <= list.capacity && (size_t)list.next[prev] == i)
             fprintf(png, "node%zu -> node%d [color=\"blue\", penwidth=1, constraint = false];\n", i, prev);
         else if (prev != 0)
             fprintf(png, "node%zu -> node%d [color=\"red\", penwidth=1, constraint = false];\n", i, prev);

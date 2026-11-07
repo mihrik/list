@@ -82,6 +82,9 @@ error_codes list_verify(list_t *list)
     if (check_for_cycle(*list) != SUCCESSFUL_RETURN)
         return UNEXPECTED_CYCLE;
 
+    if (check_sequence(*list) != SUCCESSFUL_RETURN)
+        return WRONG_SEQUENCE;
+
     CDO(
     if (list->lcanary != LCANARY)
         return LEFT_LIST_CANARY_LOST;
@@ -141,6 +144,9 @@ error_codes list_insert_after(list_t *list, list_elem_t elem, list_elem_t pos)
 
     if (pos <= 0 || pos > (list_elem_t)list->capacity)
         return UNAVAILABLE_POS;
+
+    if (list->data[pos] == POISON)
+        return FREE_PLACE;
 
     list->data[list->free] = elem;
 
@@ -207,6 +213,9 @@ error_codes list_insert_before(list_t *list, list_elem_t elem, list_elem_t pos)
 
         return SUCCESSFUL_RETURN;
     }
+
+    if (list->data[pos] == POISON)
+        return FREE_PLACE;
 
     list->data[list->free] = elem;
 
@@ -412,6 +421,25 @@ error_codes check_indexes(list_t list)
     return SUCCESSFUL_RETURN;
 }
 
+error_codes check_sequence(list_t list)
+{
+    for (size_t i = 1; i <= list.capacity; i++)
+    {
+        int next = list.next[i];
+        int prev = list.prev[i];
+
+        if (next > 0 && (size_t)next <= list.capacity && (size_t)list.prev[next] == i);
+        else if (next != 0)
+            return WRONG_SEQUENCE;
+
+        if (prev > 0 && (size_t)prev <= list.capacity && (size_t)list.next[prev] == i);
+        else if (prev != 0)
+            return WRONG_SEQUENCE;
+    }
+
+    return SUCCESSFUL_RETURN;
+}
+
 error_codes check_error(list_t list, error_codes err, const char process[])
 {
     ONDBG(
@@ -529,6 +557,24 @@ error_codes check_error(list_t list, error_codes err, const char process[])
                                         PRINT_COLOR(EXTRA_RED, "WRONG_PREV_INDEX (error_code = %d), while doing %s, check: <%s> to get more information\n", WRONG_PREV_INDEX, process, FNAME);
 
                                         print_html(list, FNAME, process, PIC_NAME, "WRONG_PREV_INDEX");
+
+                                        break;
+                                     }
+        case WRONG_SEQUENCE         :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "WRONG_SEQUENCE (error_code = %d), while doing %s, check: <%s> to get more information\n", WRONG_SEQUENCE, process, FNAME);
+
+                                        print_html(list, FNAME, process, PIC_NAME, "WRONG_SEQUENCE");
+
+                                        break;
+                                     }
+        case FREE_PLACE             :
+                                     {
+                                        PRINT_COLOR(EXTRA_RED, "list: <%s> created in <%s:%d> in function <%s>\n", list.name, list.file, list.line, list.func);
+                                        PRINT_COLOR(EXTRA_RED, "FREE_PLACE (error_code = %d), while doing %s, check: <%s> to get more information\n", FREE_PLACE, process, FNAME);
+
+                                        print_html(list, FNAME, process, PIC_NAME, "FREE_PLACE");
 
                                         break;
                                      }

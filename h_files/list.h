@@ -105,7 +105,8 @@ typedef enum error_codes
     UNEXPECTED_CYCLE        = 25,
     WRONG_NEXT_INDEX        = 26,
     WRONG_PREV_INDEX        = 27,
-    UNAVAILABLE_FILE        = 28
+    UNAVAILABLE_FILE        = 28,
+    WRONG_SEQUENCE          = 29
 } error_codes;
 
 typedef struct list_t
@@ -142,6 +143,7 @@ error_codes list_ctor(list_t *list , size_t start_size);
 error_codes fill_array(list_elem_t *arr, list_elem_t elem, size_t start, size_t end);
 error_codes prepare_array(list_elem_t **arr, list_elem_t zero_elem, list_elem_t fill_elem, size_t size);
 error_codes list_verify(list_t *list);
+error_codes check_sequence(list_t list);
 error_codes list_dtor(list_t *list);
 error_codes realloc_arrays(list_t *list);
 error_codes realloc_array(list_elem_t **arr, size_t capacity, list_elem_t filler);

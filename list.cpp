@@ -10,26 +10,18 @@ int main(void)
         CDO(, .rcanary = RCANARY)};
     LIST_CTOR(&list, 3)
 
-    for (int i = 1; i <= 4; i++)
-    {
-        LIST_INSERT_AFTER(&list, i * 10, get_tail(list));
-    }
-
-    for (int i = 1; i <= 2; i++)
-    {
-        LIST_INSERT_BEFORE(&list, -i * 10, get_head(list));
-    }
-
-    list_elem_t pos = get_head(list);
-
-    for (int i = 0; i < 2; i++)
-        pos = list.next[pos];
-
-    LIST_INSERT_AFTER(&list, 777, pos);
-
-    LIST_INSERT_BEFORE(&list, 888, pos);
-
-    LIST_INSERT_AFTER(&list, 999, get_tail(list));
+    LIST_INSERT_AFTER(&list, 10, 0);
+    LIST_INSERT_AFTER(&list, 20, 1);
+    LIST_INSERT_AFTER(&list, 30, 2);
+    LIST_INSERT_AFTER(&list, 40, 3);
+    LIST_POP(&list, &rtrn_val, 1);
+    LIST_POP(&list, &rtrn_val, 2);
+    LIST_POP(&list, &rtrn_val, 3);
+    LIST_INSERT_BEFORE(&list, 20, 4);
+    LIST_INSERT_AFTER(&list, 30, 3);
+    LIST_INSERT_AFTER(&list, 40, 2);
+    list.next[3] = 6;
+    LIST_INSERT_BEFORE(&list, 4, 110);
 
     LIST_DTOR(&list);
 

@@ -217,7 +217,7 @@ tail index.....4</h3>
 </pre>
 Graph Visualization
 <img src=png_files/MEOW3.png width=1200px>Text Diagram
-<p>HEAD:[1] -> [2] -> [3] -> [4]:TAIL</p><h1> DUMP <font color=red>INSERT_BEFORE:</font>SUCCESS</h1>
+<p>HEAD:[1] -> [2] -> [3] -> [4]:TAIL</p><h1> DUMP <font color=red>POP:</font>SUCCESS</h1>
 
 <style>
     table {
@@ -232,9 +232,9 @@ Graph Visualization
 </style>
 
 <pre>
-<h3 style="line-height: 0.9;">size...........5
+<h3 style="line-height: 0.9;">size...........3
 capacity.......6
-head index.....5
+head index.....2
 tail index.....4</h3>
 <table>
     <tr>
@@ -248,20 +248,20 @@ tail index.....4</h3>
         <td>0</td>
         <td>305419896</td>
         <td>4</td>
-        <td>5</td>
+        <td>2</td>
         <td>Service</td>
     </tr>
     <tr>
         <td>1</td>
-        <td>10</td>
+        <td>305419896</td>
+        <td>0</td>
         <td>5</td>
-        <td>2</td>
-        <td>Used</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>2</td>
         <td>20</td>
-        <td>1</td>
+        <td>0</td>
         <td>3</td>
         <td>Used</td>
     </tr>
@@ -281,15 +281,15 @@ tail index.....4</h3>
     </tr>
     <tr>
         <td>5</td>
-        <td>-10</td>
-        <td>0</td>
+        <td>305419896</td>
         <td>1</td>
-        <td>Used</td>
+        <td>6</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>6</td>
         <td>305419896</td>
-        <td>0</td>
+        <td>5</td>
         <td>0</td>
         <td>Free</td>
     </tr>
@@ -297,7 +297,7 @@ tail index.....4</h3>
 </pre>
 Graph Visualization
 <img src=png_files/MEOW4.png width=1200px>Text Diagram
-<p>HEAD:[5] -> [1] -> [2] -> [3] -> [4]:TAIL</p><h1> DUMP <font color=red>INSERT_BEFORE:</font>SUCCESS</h1>
+<p>HEAD:[2] -> [3] -> [4]:TAIL</p><h1> DUMP <font color=red>POP:</font>SUCCESS</h1>
 
 <style>
     table {
@@ -312,9 +312,9 @@ Graph Visualization
 </style>
 
 <pre>
-<h3 style="line-height: 0.9;">size...........6
-capacity.......12
-head index.....6
+<h3 style="line-height: 0.9;">size...........2
+capacity.......6
+head index.....3
 tail index.....4</h3>
 <table>
     <tr>
@@ -328,27 +328,27 @@ tail index.....4</h3>
         <td>0</td>
         <td>305419896</td>
         <td>4</td>
-        <td>6</td>
+        <td>3</td>
         <td>Service</td>
     </tr>
     <tr>
         <td>1</td>
-        <td>10</td>
-        <td>5</td>
+        <td>305419896</td>
         <td>2</td>
-        <td>Used</td>
+        <td>5</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>2</td>
-        <td>20</td>
+        <td>305419896</td>
+        <td>0</td>
         <td>1</td>
-        <td>3</td>
-        <td>Used</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>3</td>
         <td>30</td>
-        <td>2</td>
+        <td>0</td>
         <td>4</td>
         <td>Used</td>
     </tr>
@@ -361,57 +361,15 @@ tail index.....4</h3>
     </tr>
     <tr>
         <td>5</td>
-        <td>-10</td>
-        <td>6</td>
+        <td>305419896</td>
         <td>1</td>
-        <td>Used</td>
+        <td>6</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>6</td>
-        <td>-20</td>
-        <td>0</td>
+        <td>305419896</td>
         <td>5</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>7</td>
-        <td>305419896</td>
-        <td>0</td>
-        <td>8</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>8</td>
-        <td>305419896</td>
-        <td>7</td>
-        <td>9</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>9</td>
-        <td>305419896</td>
-        <td>8</td>
-        <td>10</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>10</td>
-        <td>305419896</td>
-        <td>9</td>
-        <td>11</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>11</td>
-        <td>305419896</td>
-        <td>10</td>
-        <td>12</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>12</td>
-        <td>305419896</td>
-        <td>11</td>
         <td>0</td>
         <td>Free</td>
     </tr>
@@ -419,7 +377,7 @@ tail index.....4</h3>
 </pre>
 Graph Visualization
 <img src=png_files/MEOW5.png width=1200px>Text Diagram
-<p>HEAD:[6] -> [5] -> [1] -> [2] -> [3] -> [4]:TAIL</p><h1> DUMP <font color=red>INSERT_AFTER:</font>SUCCESS</h1>
+<p>HEAD:[3] -> [4]:TAIL</p><h1> DUMP <font color=red>POP:</font>SUCCESS</h1>
 
 <style>
     table {
@@ -434,9 +392,9 @@ Graph Visualization
 </style>
 
 <pre>
-<h3 style="line-height: 0.9;">size...........7
-capacity.......12
-head index.....6
+<h3 style="line-height: 0.9;">size...........1
+capacity.......6
+head index.....4
 tail index.....4</h3>
 <table>
     <tr>
@@ -450,90 +408,48 @@ tail index.....4</h3>
         <td>0</td>
         <td>305419896</td>
         <td>4</td>
-        <td>6</td>
+        <td>4</td>
         <td>Service</td>
     </tr>
     <tr>
         <td>1</td>
-        <td>10</td>
+        <td>305419896</td>
+        <td>2</td>
         <td>5</td>
-        <td>7</td>
-        <td>Used</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>2</td>
-        <td>20</td>
-        <td>7</td>
+        <td>305419896</td>
         <td>3</td>
-        <td>Used</td>
+        <td>1</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>3</td>
-        <td>30</td>
+        <td>305419896</td>
+        <td>0</td>
         <td>2</td>
-        <td>4</td>
-        <td>Used</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>4</td>
         <td>40</td>
-        <td>3</td>
+        <td>0</td>
         <td>0</td>
         <td>Used</td>
     </tr>
     <tr>
         <td>5</td>
-        <td>-10</td>
-        <td>6</td>
+        <td>305419896</td>
         <td>1</td>
-        <td>Used</td>
+        <td>6</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>6</td>
-        <td>-20</td>
-        <td>0</td>
+        <td>305419896</td>
         <td>5</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>7</td>
-        <td>777</td>
-        <td>1</td>
-        <td>2</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>8</td>
-        <td>305419896</td>
-        <td>0</td>
-        <td>9</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>9</td>
-        <td>305419896</td>
-        <td>8</td>
-        <td>10</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>10</td>
-        <td>305419896</td>
-        <td>9</td>
-        <td>11</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>11</td>
-        <td>305419896</td>
-        <td>10</td>
-        <td>12</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>12</td>
-        <td>305419896</td>
-        <td>11</td>
         <td>0</td>
         <td>Free</td>
     </tr>
@@ -541,7 +457,7 @@ tail index.....4</h3>
 </pre>
 Graph Visualization
 <img src=png_files/MEOW6.png width=1200px>Text Diagram
-<p>HEAD:[6] -> [5] -> [1] -> [7] -> [2] -> [3] -> [4]:TAIL</p><h1> DUMP <font color=red>INSERT_BEFORE:</font>SUCCESS</h1>
+<p>HEAD:[4]:TAIL</p><h1> DUMP <font color=red>INSERT_BEFORE:</font>SUCCESS</h1>
 
 <style>
     table {
@@ -556,9 +472,9 @@ Graph Visualization
 </style>
 
 <pre>
-<h3 style="line-height: 0.9;">size...........8
-capacity.......12
-head index.....6
+<h3 style="line-height: 0.9;">size...........2
+capacity.......6
+head index.....3
 tail index.....4</h3>
 <table>
     <tr>
@@ -572,27 +488,27 @@ tail index.....4</h3>
         <td>0</td>
         <td>305419896</td>
         <td>4</td>
-        <td>6</td>
+        <td>3</td>
         <td>Service</td>
     </tr>
     <tr>
         <td>1</td>
-        <td>10</td>
-        <td>8</td>
-        <td>7</td>
-        <td>Used</td>
+        <td>305419896</td>
+        <td>2</td>
+        <td>5</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>2</td>
+        <td>305419896</td>
+        <td>0</td>
+        <td>1</td>
+        <td>Free</td>
+    </tr>
+    <tr>
+        <td>3</td>
         <td>20</td>
-        <td>7</td>
-        <td>3</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>30</td>
-        <td>2</td>
+        <td>0</td>
         <td>4</td>
         <td>Used</td>
     </tr>
@@ -605,57 +521,15 @@ tail index.....4</h3>
     </tr>
     <tr>
         <td>5</td>
-        <td>-10</td>
-        <td>6</td>
-        <td>8</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>6</td>
-        <td>-20</td>
-        <td>0</td>
-        <td>5</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>7</td>
-        <td>777</td>
+        <td>305419896</td>
         <td>1</td>
-        <td>2</td>
-        <td>Used</td>
+        <td>6</td>
+        <td>Free</td>
     </tr>
     <tr>
-        <td>8</td>
-        <td>888</td>
+        <td>6</td>
+        <td>305419896</td>
         <td>5</td>
-        <td>1</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>9</td>
-        <td>305419896</td>
-        <td>0</td>
-        <td>10</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>10</td>
-        <td>305419896</td>
-        <td>9</td>
-        <td>11</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>11</td>
-        <td>305419896</td>
-        <td>10</td>
-        <td>12</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>12</td>
-        <td>305419896</td>
-        <td>11</td>
         <td>0</td>
         <td>Free</td>
     </tr>
@@ -663,7 +537,7 @@ tail index.....4</h3>
 </pre>
 Graph Visualization
 <img src=png_files/MEOW7.png width=1200px>Text Diagram
-<p>HEAD:[6] -> [5] -> [8] -> [1] -> [7] -> [2] -> [3] -> [4]:TAIL</p><h1> DUMP <font color=red>INSERT_AFTER:</font>SUCCESS</h1>
+<p>HEAD:[3] -> [4]:TAIL</p><h1> DUMP <font color=red>INSERT_AFTER:</font>SUCCESS</h1>
 
 <style>
     table {
@@ -678,10 +552,10 @@ Graph Visualization
 </style>
 
 <pre>
-<h3 style="line-height: 0.9;">size...........9
-capacity.......12
-head index.....6
-tail index.....9</h3>
+<h3 style="line-height: 0.9;">size...........3
+capacity.......6
+head index.....3
+tail index.....4</h3>
 <table>
     <tr>
         <th>Index</th>
@@ -693,91 +567,49 @@ tail index.....9</h3>
     <tr>
         <td>0</td>
         <td>305419896</td>
-        <td>9</td>
-        <td>6</td>
+        <td>4</td>
+        <td>3</td>
         <td>Service</td>
     </tr>
     <tr>
         <td>1</td>
-        <td>10</td>
-        <td>8</td>
-        <td>7</td>
-        <td>Used</td>
+        <td>305419896</td>
+        <td>0</td>
+        <td>5</td>
+        <td>Free</td>
     </tr>
     <tr>
         <td>2</td>
-        <td>20</td>
-        <td>7</td>
-        <td>3</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>3</td>
         <td>30</td>
-        <td>2</td>
+        <td>3</td>
         <td>4</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>20</td>
+        <td>0</td>
+        <td>2</td>
         <td>Used</td>
     </tr>
     <tr>
         <td>4</td>
         <td>40</td>
-        <td>3</td>
-        <td>9</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>5</td>
-        <td>-10</td>
-        <td>6</td>
-        <td>8</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>6</td>
-        <td>-20</td>
-        <td>0</td>
-        <td>5</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>7</td>
-        <td>777</td>
-        <td>1</td>
         <td>2</td>
+        <td>0</td>
         <td>Used</td>
     </tr>
     <tr>
-        <td>8</td>
-        <td>888</td>
         <td>5</td>
+        <td>305419896</td>
         <td>1</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>9</td>
-        <td>999</td>
-        <td>4</td>
-        <td>0</td>
-        <td>Used</td>
-    </tr>
-    <tr>
-        <td>10</td>
-        <td>305419896</td>
-        <td>0</td>
-        <td>11</td>
+        <td>6</td>
         <td>Free</td>
     </tr>
     <tr>
-        <td>11</td>
+        <td>6</td>
         <td>305419896</td>
-        <td>10</td>
-        <td>12</td>
-        <td>Free</td>
-    </tr>
-    <tr>
-        <td>12</td>
-        <td>305419896</td>
-        <td>11</td>
+        <td>5</td>
         <td>0</td>
         <td>Free</td>
     </tr>
@@ -785,4 +617,164 @@ tail index.....9</h3>
 </pre>
 Graph Visualization
 <img src=png_files/MEOW8.png width=1200px>Text Diagram
-<p>HEAD:[6] -> [5] -> [8] -> [1] -> [7] -> [2] -> [3] -> [4] -> [9]:TAIL</p>
+<p>HEAD:[3] -> [2] -> [4]:TAIL</p><h1> DUMP <font color=red>INSERT_AFTER:</font>SUCCESS</h1>
+
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border:1px solid black;
+        padding: 0.5px 1px;
+        text-align: center;
+    }
+</style>
+
+<pre>
+<h3 style="line-height: 0.9;">size...........4
+capacity.......6
+head index.....3
+tail index.....4</h3>
+<table>
+    <tr>
+        <th>Index</th>
+        <th>Meaning</th>
+        <th>Prev</th>
+        <th>Next</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>305419896</td>
+        <td>4</td>
+        <td>3</td>
+        <td>Service</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>40</td>
+        <td>2</td>
+        <td>4</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>30</td>
+        <td>3</td>
+        <td>1</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>20</td>
+        <td>0</td>
+        <td>2</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>40</td>
+        <td>1</td>
+        <td>0</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>305419896</td>
+        <td>0</td>
+        <td>6</td>
+        <td>Free</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>305419896</td>
+        <td>5</td>
+        <td>0</td>
+        <td>Free</td>
+    </tr>
+</table>
+</pre>
+Graph Visualization
+<img src=png_files/MEOW9.png width=1200px>Text Diagram
+<p>HEAD:[3] -> [2] -> [1] -> [4]:TAIL</p><h1> DUMP <font color=red>list_insert_before:</font>WRONG_SEQUENCE</h1>
+
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border:1px solid black;
+        padding: 0.5px 1px;
+        text-align: center;
+    }
+</style>
+
+<pre>
+<h3 style="line-height: 0.9;">size...........4
+capacity.......6
+head index.....3
+tail index.....4</h3>
+<table>
+    <tr>
+        <th>Index</th>
+        <th>Meaning</th>
+        <th>Prev</th>
+        <th>Next</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>305419896</td>
+        <td>4</td>
+        <td>3</td>
+        <td>Service</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>40</td>
+        <td>2</td>
+        <td>4</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>30</td>
+        <td>3</td>
+        <td>1</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>20</td>
+        <td>0</td>
+        <td>6</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>40</td>
+        <td>1</td>
+        <td>0</td>
+        <td>Used</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>305419896</td>
+        <td>0</td>
+        <td>6</td>
+        <td>Free</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>305419896</td>
+        <td>5</td>
+        <td>0</td>
+        <td>Free</td>
+    </tr>
+</table>
+</pre>
+Graph Visualization
+<img src=png_files/MEOW10.png width=1200px>Text Diagram
+<p>HEAD:[3] -> [6] -> [0] -> [3] -> [6] -> [0] -> [3]
